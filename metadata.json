@@ -1,0 +1,6 @@
+{
+  "name": "Minimmo Home Online",
+  "description": "Clean, Apple-style mobile-first social sandbox MMO prototype with 3D character control, build modes, and real-time multiplayer over WebSockets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

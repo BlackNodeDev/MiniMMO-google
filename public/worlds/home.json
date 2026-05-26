@@ -1,0 +1,79 @@
+{
+  "id": "home_dev_001",
+  "name": "Minimmo Home",
+  "owner": "BlackLlama",
+  "theme": "apple_clean_studio",
+  "spawn": {
+    "x": 0,
+    "y": 0.1,
+    "z": 0,
+    "yaw": 3.14159
+  },
+  "materials": [
+    {
+      "id": "white",
+      "name": "White Studio",
+      "color": "0xffffff",
+      "roughness": 0.44,
+      "metalness": 0.02
+    },
+    {
+      "id": "graphite",
+      "name": "Graphite Matte",
+      "color": "0x202938",
+      "roughness": 0.52,
+      "metalness": 0.02
+    },
+    {
+      "id": "cyanGlass",
+      "name": "Llama Cyan Glass",
+      "color": "0xb8f2ff",
+      "roughness": 0.36,
+      "metalness": 0.04
+    },
+    {
+      "id": "silver",
+      "name": "Polished Silver",
+      "color": "0xdfe7ee",
+      "roughness": 0.38,
+      "metalness": 0.03
+    },
+    {
+      "id": "softWood",
+      "name": "Natural Hinoki Wood",
+      "color": "0xe6cea8",
+      "roughness": 0.8,
+      "metalness": 0.0
+    }
+  ],
+  "objects": [
+    {
+      "id": "white_slab_1",
+      "type": "block",
+      "position": [-6.6, 0.45, -5.4],
+      "size": [4.4, 0.9, 1.8],
+      "material": "white"
+    },
+    {
+      "id": "graphite_cube_1",
+      "type": "block",
+      "position": [5.2, 0.7, -2.2],
+      "size": [1.8, 1.4, 1.8],
+      "material": "graphite"
+    },
+    {
+      "id": "cyan_platform_1",
+      "type": "block",
+      "position": [-0.8, 0.24, 5.2],
+      "size": [4.0, 0.48, 3.4],
+      "material": "cyanGlass"
+    },
+    {
+      "id": "silver_bench_1",
+      "type": "block",
+      "position": [7.6, 0.32, 5.8],
+      "size": [3.2, 0.64, 1.4],
+      "material": "silver"
+    }
+  ]
+}

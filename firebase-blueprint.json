@@ -1,0 +1,60 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Metadata for a portfolio project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique ID of the project" },
+        "title": { "type": "string", "description": "Title of the project" },
+        "description": { "type": "string", "description": "Short description of the project" },
+        "longDescription": { "type": "string", "description": "Detailed description of the project" },
+        "coverImage": { "type": "string", "description": "URL of the project background or preview image" },
+        "tags": { "type": "array", "description": "List of technologies and categories used" },
+        "projectUrl": { "type": "string", "description": "Optional link to the live project" },
+        "githubUrl": { "type": "string", "description": "Optional link to the GitHub repository" },
+        "order": { "type": "integer", "description": "Sorting order" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Time of creation" }
+      },
+      "required": ["id", "title", "description", "tags", "order"]
+    },
+    "Favorite": {
+      "title": "Favorite",
+      "description": "User's favorited projects",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase UID of the user who favorited" },
+        "projectId": { "type": "string", "description": "ID of the favorited project" },
+        "favoritedAt": { "type": "string", "format": "date-time", "description": "Timestamp when it was favorited" }
+      },
+      "required": ["userId", "projectId", "favoritedAt"]
+    },
+    "UserSetting": {
+      "title": "UserSetting",
+      "description": "Personal developer settings and preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase UID of the settings owner" },
+        "themePreference": { "type": "string", "enum": ["light", "dark", "sepia", "wabi-sabi"], "description": "Selected theme preference" },
+        "soundEnabled": { "type": "boolean", "description": "Whether UI sound effects are enabled" },
+        "interactiveBgComplexity": { "type": "string", "enum": ["low", "regular", "high"], "description": "Complexity of the 3D canvas" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of modification" }
+      },
+      "required": ["userId", "themePreference", "soundEnabled", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "Collection of showcase portfolio projects"
+    },
+    "favorites/{favoriteId}": {
+      "schema": "Favorite",
+      "description": "Collection of user-specific favorited items"
+    },
+    "settings/{userId}": {
+      "schema": "UserSetting",
+      "description": "User specific settings and aesthetic preferences"
+    }
+  }
+}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>Minimmo Home Online - BlackLlama</title>
+  
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- Import maps polyfill and configuration for three.js loads -->
+  <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.164.1/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+
+  <!-- Loading context overlay -->
+  <div id="bootScreen">
+    <div class="spinner"></div>
+    <div style="font-family: inherit; font-size: 13px; font-weight: 600; color: #1e293b; tracking: -0.01em;">
+      AWAITING MINIMMO WORLD SEED // 起動中
+    </div>
+  </div>
+
+  <!-- Primary 3D WebGL renderer target -->
+  <div id="app"></div>
+
+  <!-- Simulated tactile analog joystick controllers -->
+  <div id="controls" aria-hidden="true">
+    <div id="stickZone">
+      <div id="stickBase">
+        <div id="stickKnob"></div>
+      </div>
+    </div>
+    <!-- Build Tool Delete Action Trigger -->
+    <div id="action">REMOVE</div>
+  </div>
+
+  <!-- Immersive Floating HUD panels -->
+  <div id="shell">
+    
+    <!-- Top System Indicators brand bar -->
+    <div id="topBar">
+      <button id="hamburger" class="glass" aria-label="Open options menu">☰</button>
+      
+      <div id="brandPill" class="glass">
+        <div id="brandMark">🦙</div>
+        <div id="brandText">
+          <b>Minimmo Home Online</b>
+          <span>Dev Skin · private sandbox v0.1</span>
+        </div>
+        <div id="statusDot" class="offline" title="Connection Offline"></div>
+      </div>
+    </div>
+
+    <!-- Options Side sliding menu -->
+    <section id="sidePanel" class="glass" aria-hidden="true">
+      <div class="panelTitle">
+        <div>
+          <b>Home Options</b>
+          <span>Configure and share your private build chamber.</span>
+        </div>
+        <button class="closeBtn" id="closeMenu">×</button>
+      </div>
+      
+      <div class="menuGrid">
+        <button class="menuItem" id="saveHome">
+          <strong>Save Layout</strong>
+          <small>Saves placed blocks to local backup.</small>
+        </button>
+        <button class="menuItem" id="loadHome">
+          <strong>Load Layout</strong>
+          <small>Rebuild blocks from local backup.</small>
+        </button>
+        <button class="menuItem" id="inviteFriends">
+          <strong>Copy Invite</strong>
+          <small>Retrieve link to invite friends in mmo.</small>
+        </button>
+        <button class="menuItem" id="resetCam">
+          <strong>Reset Camera</strong>
+          <small>Recenter 3D view coordinates.</small>
+        </button>
+      </div>
+    </section>
+
+    <!-- Multi-Tab Builder panel -->
+    <section id="tabPanel" class="glass" aria-hidden="true">
+      <div class="panelTitle">
+        <h2 id="panelName" style="font-size: 18px; margin: 0; font-weight: 700;">Home</h2>
+        <button class="closeBtn" id="closePanel">×</button>
+      </div>
+      <p id="panelBody">Adjust settings or select blocks to place.</p>
+      
+      <!-- Placeholder to put custom tool selections -->
+      <div id="tabContent"></div>
+      <div id="tabActions"></div>
+    </section>
+
+    <!-- Bottom social chat drawer overlay -->
+    <div id="chatContainer" class="glass">
+      <div id="chatMessages"></div>
+      <div id="chatInputRow">
+        <input type="text" id="chatInput" placeholder="Say hi..." maxlength="160" />
+        <button id="chatSend">SEND</button>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation Pill -->
+    <nav id="bottomNav" class="glass" aria-label="Multiplayer tabs navigation">
+      <button class="navBtn active" data-tab="home">
+        <span>⌂</span>Home
+      </button>
+      <button class="navBtn" data-tab="discover">
+        <span>◌</span>Discover
+      </button>
+      <button class="navBtn" data-tab="create">
+        <span>＋</span>Create
+      </button>
+      <button class="navBtn" data-tab="avatar">
+        <span>◐</span>Avatar
+      </button>
+    </nav>
+
+  </div>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

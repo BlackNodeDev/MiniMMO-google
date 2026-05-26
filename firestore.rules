@@ -1,0 +1,115 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net - deny all unmatched read/write operations
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Hardened Global Helper Primitives ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(ownerId) {
+      return isSignedIn() && request.auth.uid == ownerId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Admin Helper (checks if user is listed in admins collection)
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // --- Entity Specific Validation Blueprints ---
+
+    // Project schema validation
+    function isValidProject(data) {
+      return data.keys().hasAll(['id', 'title', 'description', 'tags', 'order'])
+        && data.keys().size() <= 10
+        && data.id is string && data.id.size() <= 128
+        && data.title is string && data.title.size() <= 100
+        && data.description is string && data.description.size() <= 500
+        && data.tags is list && data.tags.size() <= 20
+        && data.order is int;
+    }
+
+    // Favorite schema validation
+    function isValidFavorite(data) {
+      return data.keys().hasAll(['userId', 'projectId', 'favoritedAt'])
+        && data.keys().size() == 3
+        && data.userId == request.auth.uid
+        && data.projectId is string && data.projectId.size() <= 128
+        && data.favoritedAt == request.time;
+    }
+
+    // User Settings schema validation
+    function isValidUserSetting(data) {
+      return data.keys().hasAll(['userId', 'themePreference', 'soundEnabled', 'interactiveBgComplexity', 'updatedAt'])
+        && data.keys().size() == 5
+        && data.userId == request.auth.uid
+        && data.themePreference is string && data.themePreference.size() <= 20 && data.themePreference in ['light', 'dark', 'sepia', 'wabi-sabi']
+        && data.soundEnabled is bool
+        && data.interactiveBgComplexity is string && data.interactiveBgComplexity.size() <= 20 && data.interactiveBgComplexity in ['low', 'regular', 'high']
+        && data.updatedAt == request.time;
+    }
+
+    // --- Collection Guards ---
+
+    // Projects: Dashboard viewing of portfolio projects
+    match /projects/{projectId} {
+      allow get: if isEmailVerified() && isValidId(projectId);
+      allow list: if isEmailVerified();
+      
+      // Writes reserved for authenticated administrators
+      allow create: if isEmailVerified() && isAdmin() && isValidId(projectId) && isValidProject(incoming());
+      allow update: if isEmailVerified() && isAdmin() && isValidId(projectId) && isValidProject(incoming())
+                       && incoming().id == existing().id;
+      allow delete: if isEmailVerified() && isAdmin() && isValidId(projectId);
+    }
+
+    // Favorites: Users can favorite individual showcases which are sync-protected
+    match /favorites/{favoriteId} {
+      allow get: if isEmailVerified() && isValidId(favoriteId) && isOwner(existing().userId);
+      // Secure List Query Enforcer: forces query parameter filter checks
+      allow list: if isEmailVerified() && resource.data.userId == request.auth.uid;
+
+      allow create: if isEmailVerified() && isValidId(favoriteId) && isValidFavorite(incoming());
+      // No updates allowed to favorites (only create or delete)
+      allow update: if false;
+      allow delete: if isEmailVerified() && isValidId(favoriteId) && isOwner(existing().userId);
+    }
+
+    // Settings: User-specific developer preferences
+    match /settings/{userId} {
+      allow get: if isEmailVerified() && isValidId(userId) && isOwner(userId);
+      allow list: if isEmailVerified() && resource.data.userId == request.auth.uid;
+
+      allow create: if isEmailVerified() && isValidId(userId) && isOwner(userId) && isValidUserSetting(incoming());
+      
+      // Updates partitioned exactly to allowed mutable preferences
+      allow update: if isEmailVerified() && isValidId(userId) && isOwner(userId)
+                    && isValidUserSetting(incoming())
+                    && incoming().userId == existing().userId
+                    && incoming().diff(existing()).affectedKeys().hasOnly(['themePreference', 'soundEnabled', 'interactiveBgComplexity', 'updatedAt']);
+      
+      allow delete: if isEmailVerified() && isValidId(userId) && isOwner(userId);
+    }
+  }
+}
